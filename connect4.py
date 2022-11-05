@@ -291,8 +291,48 @@ def announce_win(player, winning_points, scores):
     return scores
 
 def main():
-    print("Καλωσήλθατε στο παιχνίδι!")
-    print("Επιθυμείτε νέο παιχνίδι (Ν) ή φόρτωση από αρχείο (S);")
+    print("Welcome!!")
+    print("Want to play new game (Ν) or load from the file (S)? ")
     player1_positions = set()  # 2 sets to keep the positions taken by the players
     player2_positions = set()
     game_type = check_game_mode(input())  # 0->new game, 1->saved game
+    if game_type == 0:  # creating a new game
+        # give and check the number of columns
+        print("Give number of columns (5-10) ")
+        rows = check_validity_of_rows(int(input()))
+        grid = create_grid(rows)
+        player = 1
+        # when creating a new game the players play at least once before any other action is taken
+        # each player selects a spot -> we check the spots validity -> we fill the grid with the players symbol -> we update player's positions
+        print("Player 1: Select column: ")
+        selected_spot = int(input())
+        selected_spot, grid, coords = select_and_fill_spot(
+            selected_spot, grid, player)
+        player1_positions.add(coords)
+        player = 2
+        print("layer 1: Select column: ")
+        selected_spot = int(input())
+        selected_spot, grid, coords = select_and_fill_spot(
+            selected_spot, grid, player)
+        player2_positions.add(coords)
+        scores = [0, 0]
+    elif game_type == 1:
+        print("Type file name: ")
+        file_name = input()
+        grid, scores, player1_positions, player2_positions = fill_grid_from_file(
+            file_name)  # check if there is a winning player from the file given
+        player = 1
+        win, winning_points, type_of_win = winning(player1_positions)
+        # standard procedure when there is a win
+        # announce win and update score -> fix grid by removing winning points and dropping down points if needed -> update players positions
+        if win:
+            scores = announce_win(player, winning_points, scores)
+            grid = fix_grid_state(grid, winning_points, player, type_of_win)
+            player1_positions, player2_positions = find_coords(grid)
+        win, winning_points, type_of_win = winning(player2_positions)
+        if win:
+            scores = announce_win(player, winning_points, scores)
+            grid = fix_grid_state(grid, winning_points, player, type_of_win)
+            player1_positions, player2_positions = find_coords(grid)
+
+    player = 1
