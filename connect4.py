@@ -279,3 +279,20 @@ def drop_down_elements(grid, elements):
         grid[elements[0][0]][elements[0][1]] = elements[1]
 
     return grid
+
+
+
+# printing who won and return the current score
+def announce_win(player, winning_points, scores):
+    print('Player ' + str(player) + ' won!')
+    print('Winning points : ', winning_points)
+    scores[player - 1] += 1
+    print("The score for this game is : ", scores)
+    return scores
+
+def main():
+    print("Καλωσήλθατε στο παιχνίδι!")
+    print("Επιθυμείτε νέο παιχνίδι (Ν) ή φόρτωση από αρχείο (S);")
+    player1_positions = set()  # 2 sets to keep the positions taken by the players
+    player2_positions = set()
+    game_type = check_game_mode(input())  # 0->new game, 1->saved game
