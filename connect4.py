@@ -310,7 +310,7 @@ def main():
             selected_spot, grid, player)
         player1_positions.add(coords)
         player = 2
-        print("layer 1: Select column: ")
+        print("Player 2: Select column: ")
         selected_spot = int(input())
         selected_spot, grid, coords = select_and_fill_spot(
             selected_spot, grid, player)
@@ -380,7 +380,7 @@ def main():
                         player2_positions)
 
             player = 2
-            print("Player 1: Select column: ")
+            print("Player 2: Select column: ")
             selected_spot = int(input())
             selected_spot, grid, coords = select_and_fill_spot(
                 selected_spot, grid, player)
