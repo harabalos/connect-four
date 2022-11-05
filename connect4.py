@@ -72,3 +72,78 @@ def fill_spot(grid, spot, player, show):
         print_grid(grid)
 
     return grid, coords
+
+
+def fill_grid_from_file(name):  # read file and translate it to grid and player coords
+
+    with open(str(name), 'rb') as f:
+        lines = [x.decode('utf8').strip().split(',')
+                 for x in f.readlines()]  # read all lines of the file
+    scores = lines[-1]
+    # save the scores and delete the line
+    scores = [int(score) for score in scores]
+    del lines[-1]
+    # create an empty grid in regard to the len of the lines list
+    grid = [[' ' for _ in range(len(lines))] for _ in range(len(lines))]
+    # fill the grid / depends on the values we read => 1 -> O and 2 -> X
+    for i, item in enumerate(lines):
+        for j, char in enumerate(item):
+            if char == '0':
+                grid[i][j] = ' '
+            elif char == '1':
+                grid[i][j] = 'O'
+            elif char == '2':
+                grid[i][j] = 'X'
+            else:
+                # if we give something that isnt 0,1 or 2 raise error
+                raise ValueError("Values in the file are not correct!")
+            j += 1
+        i += 1
+    print_grid(grid)
+    player1_coords, player2_coords = find_coords(grid)  # update player points
+    return grid, scores, player1_coords, player2_coords
+
+
+def find_coords(grid):  # search the grid and save each players points
+    player1_coords = set()
+    player2_coords = set()
+    for i, items in enumerate(grid):
+        for j, element in enumerate(items):
+            if element != ' ':
+                if element == 'O':
+                    player1_coords.add((i, j))
+                else:
+                    player2_coords.add((i, j))
+    return player1_coords, player2_coords
+
+def save_game(grid, scores, name):  # translate the grid to a file as requested
+
+    f = open(str(name), "w")
+    for i, items in enumerate(grid):
+        comma = 1
+        for j, element in enumerate(items):
+            if j == len(grid) - 1:
+                comma = 0
+            if element == " ":
+                if comma:
+                    f.write('0,')
+                else:
+                    f.write('0')
+            elif element == 'O':
+                if comma:
+                    f.write('1,')
+                else:
+                    f.write('1')
+            elif element == 'X':
+                if comma:
+                    f.write('2,')
+                else:
+                    f.write('2')
+        f.write('\n')
+    for i, items in enumerate(scores):
+        if i == 0:
+            f.write(str(items) + ',')
+        else:
+            f.write(str(items))
+
+    print("Game saved!")
