@@ -336,3 +336,81 @@ def main():
             player1_positions, player2_positions = find_coords(grid)
 
     player = 1
+
+    while True:  # loop until we get bored :)
+
+        print("Press anything to continue: ")
+        # after players finish their moves press 's' to save the game
+        print("To pause and save the game to a file select \"s\": ") 
+        given_key = input()
+        if given_key == "s":
+            print("Type file name: ")
+            name = input()
+            save_game(grid, scores, name)
+            break
+        else:  # if we dont press 's' the game does continue and the 2 players make their next moves
+            print("Player 1: Select column: ")
+            selected_spot = int(input())
+            selected_spot, grid, coords = select_and_fill_spot(
+                selected_spot, grid, player)
+            player1_positions.add(coords)
+            # whenever a move is made we check if we spot a win
+            win, winning_points, type_of_win = winning(player1_positions)
+            if win:
+                scores = announce_win(player, winning_points, scores)
+                grid = fix_grid_state(
+                    grid, winning_points, player, type_of_win)
+                player1_positions, player2_positions = find_coords(grid)
+
+                win, winning_points, type_of_win = winning(player1_positions)
+                while win:
+                    scores = announce_win(player, winning_points, scores)
+                    grid = fix_grid_state(
+                        grid, winning_points, player, type_of_win)
+                    player1_positions, player2_positions = find_coords(grid)
+                    win, winning_points, type_of_win = winning(
+                        player1_positions)
+                win, winning_points, type_of_win = winning(player2_positions)
+                while win:
+                    scores = announce_win(player, winning_points, scores)
+                    grid = fix_grid_state(
+                        grid, winning_points, player, type_of_win)
+                    player1_positions, player2_positions = find_coords(grid)
+                    win, winning_points, type_of_win = winning(
+                        player2_positions)
+
+            player = 2
+            print("Player 1: Select column: ")
+            selected_spot = int(input())
+            selected_spot, grid, coords = select_and_fill_spot(
+                selected_spot, grid, player)
+            player2_positions.add(coords)
+            win, winning_points, type_of_win = winning(player2_positions)
+            if win:
+                scores = announce_win(player, winning_points, scores)
+                grid = fix_grid_state(
+                    grid, winning_points, player, type_of_win)
+                player1_positions, player2_positions = find_coords(grid)
+
+                win, winning_points, type_of_win = winning(player1_positions)
+                while win:
+                    scores = announce_win(player, winning_points, scores)
+                    grid = fix_grid_state(
+                        grid, winning_points, player, type_of_win)
+                    player1_positions, player2_positions = find_coords(grid)
+                    win, winning_points, type_of_win = winning(
+                        player1_positions)
+                win, winning_points, type_of_win = winning(player2_positions)
+                while win:
+                    scores = announce_win(player, winning_points, scores)
+                    grid = fix_grid_state(
+                        grid, winning_points, player, type_of_win)
+                    player1_positions, player2_positions = find_coords(grid)
+                    win, winning_points, type_of_win = winning(
+                        player2_positions)
+
+            player = 1
+
+
+if __name__ == '__main__':
+    main()
