@@ -147,3 +147,65 @@ def save_game(grid, scores, name):  # translate the grid to a file as requested
             f.write(str(items))
 
     print("Game saved!")
+
+def winning(set_of_positions):  # check if there is a win // we return :
+    #                       // bool value for winning, list of winning points, type of win
+    '''
+    >>> winning([(1,2), (1,3), (1,4), (1,6), (1,5)])
+    (1, [(1, 2), (1, 3), (1, 4), (1, 5)], 'hor')
+    >>> winning([(4,2), (4,3), (4,4), (4,6), (4,5)])
+    (1, [(4, 2), (4, 3), (4, 4), (4, 5)], 'hor')
+    '''
+    if len(set_of_positions) < 4:  # if players positions are less than 4 there cannot be a win
+        return 0, [], "none"
+    else:
+        hor, points, type_of_win = check_horizontal_win(
+            set_of_positions)  # search for horizontal win
+        if hor:
+            return 1, points, type_of_win
+        ver, points, type_of_win = check_vertical_win(
+            set_of_positions)  # search for vertical win
+        if ver:
+            return 1, points, type_of_win
+    return 0, [], "none"
+
+# both vertical and horizontal win could have been examined in one function
+# but we chose this format in order to make our code easier to read
+
+def check_vertical_win(set_of_positions):
+    # we sort every point firstly in regards to the y axis and secondly to the x axis
+    set_of_positions_ver = sorted(set_of_positions, key=lambda x: (x[1], x[0]))
+    for i, items in enumerate(set_of_positions_ver):
+        points = []
+        start = set_of_positions_ver[i]  # start from the first point
+        points.append(start)
+        count = 0
+        # search all points after the starting one
+        for j, elements in enumerate(set_of_positions_ver[i+1:]):
+            # if the point that we see is in the same column and has a difference of 1 in the
+            if abs(elements[0] - start[0]) == 1 + j and start[1] == elements[1]:
+                # x axis from the point before we continue until we see 3 of these points
+                points.append(elements)
+                # when we do we have at least 4 points which conclude a win !
+                count += 1
+                if count == 3:
+                    return 1, points, "ver"
+
+    return 0, [], "none"
+
+
+# same logic as above with the difference that now we sort firstly in regards to the x axis and secondly to the y axis
+def check_horizontal_win(set_of_positions):
+    set_of_positions_hor = sorted(set_of_positions, key=lambda x: (x[0], x[1]))
+    for i, items in enumerate(set_of_positions_hor):
+        points = []
+        start = set_of_positions_hor[i]
+        points.append(start)
+        count = 0
+        for j, elements in enumerate(set_of_positions_hor[i+1:]):
+            if abs(elements[1] - start[1]) == 1 + j and start[0] == elements[0]:
+                points.append(elements)
+                count += 1
+                if count == 3:
+                    return 1, points, "hor"
+    return 0, [], "none"
