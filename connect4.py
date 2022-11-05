@@ -209,3 +209,73 @@ def check_horizontal_win(set_of_positions):
                 if count == 3:
                     return 1, points, "hor"
     return 0, [], "none"
+
+def select_and_fill_spot(spot, grid, player):  # fill the spot selected by the user
+    selected_spot = check_spot_validity(spot, len(grid))
+    grid, coords = fill_spot(grid, selected_spot, player, True)
+    return selected_spot, grid, coords
+
+
+# in case of a win replace the winning points with *
+def fix_grid_state(grid, points, player, type_of_win):
+
+    if player == 1:
+        symbol = 'O'
+    else:
+        symbol = 'X'
+
+    if type_of_win == "hor":  # in case of horizontal win we need to search for more than 4 elements in the same row that are connected
+        start = points[0]
+        end = points[-1]
+        for i, items in enumerate(grid[points[0][0]]):
+            if ((abs(i - start[1]) == 1 and grid[points[0][0]][i] == symbol) or
+                    (abs(i - end[1]) == 1 and grid[points[0][0]][i] == symbol)):
+                end = list(end)
+                end[1] += 1
+                end = tuple(end)
+                grid[points[0][0]][i] = '*'
+    for items in points:
+        grid[items[0]][items[1]] = '*'
+    print_grid(grid)
+    # now clear the * and replace them with ' '
+    grid = clear_grid(grid, points, type_of_win)
+    print_grid(grid)
+    return grid
+
+
+# find any * indicated by fix_grid_state and replace them with ' '
+def clear_grid(grid, points, type_of_win):
+    drop_down = []
+    if type_of_win == "ver":  # in case of vertical win we dont need to consider dropping down any elements or searching for a larger win that 4 elements in a column
+        for items in points:
+            grid[items[0]][items[1]] = ' '
+    elif type_of_win == "hor":  # in case of horizontal win we scan the whole grid because we might have a win bigger than 4 elements
+        for i in range(len(grid)):
+            for j in range(len(grid)):
+                if grid[i][j] == '*':
+                    drop_down.append([i, j])
+                    grid[i][j] = ' '
+        # also we need to check if we need to drop down any elements from the row above the winning one
+        grid = drop_down_elements(grid, drop_down)
+    return grid
+
+# in case of horizontal win drop down any points above the points that concluded the win
+def drop_down_elements(grid, elements):
+
+    points = []
+    for items in elements:
+        i = 1
+        # if above of the winning elements the grid isnt empty we need to drop anything that is above
+        if grid[items[0] - 1][items[1]] != ' ':
+            # we save the coords and the symbol of the points that we need to drop
+            while grid[items[0] - i][items[1]] != ' ':
+                # list[(coordx,coordy), symbol]
+                points.append(([items[0] - i + 1, items[1]],
+                              grid[items[0] - i][items[1]]))
+                i += 1
+            grid[items[0] - i + 1][items[1]] = ' '
+    for elements in points:
+        # replace! // drop down
+        grid[elements[0][0]][elements[0][1]] = elements[1]
+
+    return grid
