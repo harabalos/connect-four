@@ -11,3 +11,6 @@ Screenshot
 ![imgonline-com-ua-twotoone-00uxtf31fjKI0nv](https://user-images.githubusercontent.com/92236091/200147180-e524a8d8-b27a-4b20-8113-2e52a5b15b2c.jpg)
 
 
+Licence
+---------------
+This project is licensed under the terms of the [MIT](LICENCE.txt) License.
